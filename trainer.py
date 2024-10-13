@@ -110,14 +110,10 @@ class Trainer:
 
         # Training Warmup
         if self.total_steps >= self.warmup_steps:
-            set_req_grad(self.dis_A, False)
-            set_req_grad(self.dis_B, False)
-            loss_GA_dis = self.L2(self.dis_A(fake_A), self.comp_true)
-            loss_GB_dis = self.L2(self.dis_B(fake_B), self.comp_true)
-            set_req_grad(self.dis_A, True)
-            set_req_grad(self.dis_B, True)
+            with torch.no_grad():
+                loss_GA_dis = self.L2(self.dis_A(fake_A), self.comp_true)
+                loss_GB_dis = self.L2(self.dis_B(fake_B), self.comp_true)
 
-            # Low when discriminator is fooled
             self.loss_hist_GA_dis.append(loss_GA_dis.item())
             self.loss_hist_GB_dis.append(loss_GB_dis.item())
         else:

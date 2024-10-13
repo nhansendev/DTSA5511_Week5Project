@@ -11,8 +11,8 @@ trainer:
   lambda_B: 10
   lambda_idt: 0.5
   warmup_steps: 0
-  use_unet: True
-  label_noise: 0.1
+  use_unet: False
+  label_noise: 0.3
   swap_prob: 0.05
   instance_noise: 0.2
   use_MSE: False
@@ -23,18 +23,18 @@ opt_G:
   betas: [0.5, 0.999]
 
 opt_D:
-  lr: 2e-4
+  lr: 1e-4
   momentum: 0.9
 
 # Generator
 gen: 
   levels: 3
   base_channels: 64
-  res_layers: 0
+  res_layers: 2
   res_dropout: 0.5
   kernel: 4
   ud_res_layers: 0
-  inst_norm: False
+  inst_norm: True
 
 unet:
   base_channels: 64
@@ -46,7 +46,7 @@ unet:
 
 # Discriminator
 dis: 
-  layers: 2
+  layers: 3
   base_channels: 64
   res_layers: 1
   dropout: 0

@@ -191,8 +191,8 @@ def plot_example(trainer, s=1.5):
 
     # Show the discriminator outputs
     # plt.suptitle(f"RA {rA} | RB {rB}\nFA {fA} | FB {fB}")
-    A_titles = [f"{r:.0%} | {1-f:.0%}" for r, f in list(zip(rA, fA))]
-    B_titles = [f"{r:.0%} | {1-f:.0%}" for r, f in list(zip(rB, fB))]
+    A_titles = [f"{r:.1f} | {f:.1f}" for r, f in list(zip(rA, fA))]
+    B_titles = [f"{r:.1f} | {f:.1f}" for r, f in list(zip(rB, fB))]
 
     labels = ["real", "fake", "cycle", "idt"]
     pairs = [[real_A, real_B], [fake_B, fake_A], [rec_A, rec_B], [idt_A, idt_B]]

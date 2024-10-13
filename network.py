@@ -1,15 +1,20 @@
 import torch
 import torch.nn as nn
-from torchsummary import summary
 from torchvision.transforms.v2 import Resize, InterpolationMode
 
 
 def weight_init(layer):
     with torch.no_grad():
-        if isinstance(layer, nn.Conv2d) or isinstance(layer, nn.Linear):
+        if isinstance(layer, nn.Conv2d):
             nn.init.normal_(layer.weight.data, 0.0, 0.02)
             if hasattr(layer, "bias") and layer.bias is not None:
-                nn.init.constant_(layer.bias.data, 0.0)
+                # nn.init.constant_(layer.bias.data, 0.0)
+                nn.init.normal_(layer.bias.data, 0.0, 0.02)
+        if isinstance(layer, nn.Linear):
+            nn.init.normal_(layer.weight.data, 0.0, 0.3)
+            if hasattr(layer, "bias") and layer.bias is not None:
+                # nn.init.constant_(layer.bias.data, 0.0)
+                nn.init.normal_(layer.bias.data, 0.0, 0.02)
 
 
 class ResizeConv(nn.Module):
@@ -83,7 +88,7 @@ class UpDownBlock(nn.Module):
         dropout=0,
         use_bias=True,
         use_activation=True,
-        use_norm=False,
+        use_norm=True,
         res_layers=0,
         size=(256, 256),
         resize=True,
@@ -175,14 +180,10 @@ class Discriminator(nn.Module):
                     mid_channels, out_norm=i < (res_layers - 1), inst_norm=inst_norm
                 )
             )
-        self.net.append(nn.Conv2d(mid_channels, 1, 6, 2))
-        self.net.append(nn.ReLU())
-        self.net.append(nn.Conv2d(1, 1, 4, 2))
-        # self.net.append(nn.AdaptiveAvgPool2d(3))
-        # self.net.append(nn.Flatten())
-        # self.net.append(nn.Linear(9, 1))
-        # if use_sigmoid:
-        # self.net.append(nn.Sigmoid())
+        self.net.append(nn.Conv2d(mid_channels, 1, 6, 6))
+        self.net.append(nn.Flatten())
+        self.net.append(nn.Linear(4, 1))
+        self.net.append(nn.Sigmoid())
 
         self.apply(weight_init)
 
@@ -407,14 +408,18 @@ def UNet_generator(
 
 
 if __name__ == "__main__":
+    from torchsummary import summary
     from AutoConfig import args_from_YAML
 
     args = args_from_YAML(r"D:\Atom\MSDS\DTSA5511\CycleGAN\config.yaml")
 
-    # net = Discriminator(**args.dis.get_kwargs())
-    net = Generator(**args.gen.get_kwargs())
+    net = Discriminator(**args.dis.get_kwargs())
+    # net = Generator(**args.gen.get_kwargs())
     # net = ResidualBlock(3)
 
     # net = UNet_generator(**args.unet.get_kwargs())
 
-    summary(net, torch.ones((1, 3, 256, 256)), device="cpu", depth=20)
+    # summary(net, torch.ones((1, 3, 256, 256)), device="cpu", depth=20)
+
+    tmp = net(torch.randn(3, 3, 256, 256))
+    print(tmp)
