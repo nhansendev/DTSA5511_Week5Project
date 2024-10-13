@@ -1,0 +1,53 @@
+
+# General
+epochs: 15
+epoch_len: 1200
+out_ival: 400
+batch_size: 4
+
+trainer:
+  pool_size: 50
+  lambda_A: 10
+  lambda_B: 10
+  lambda_idt: 0.5
+  warmup_steps: 0
+  use_unet: True
+  label_noise: 0.1
+  swap_prob: 0.05
+  instance_noise: 0.2
+  use_MSE: False
+
+# Optimizers
+opt_G:
+  lr: 2e-4
+  betas: [0.5, 0.999]
+
+opt_D:
+  lr: 2e-4
+  momentum: 0.9
+
+# Generator
+gen: 
+  levels: 3
+  base_channels: 64
+  res_layers: 0
+  res_dropout: 0.5
+  kernel: 4
+  ud_res_layers: 0
+  inst_norm: False
+
+unet:
+  base_channels: 64
+  layers: 3
+  center_res: 1
+  res_layers: 0
+  dropout: 0.5
+  inst_norm: False
+
+# Discriminator
+dis: 
+  layers: 2
+  base_channels: 64
+  res_layers: 1
+  dropout: 0
+  inst_norm: False
